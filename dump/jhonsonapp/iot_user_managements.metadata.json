@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"85810d3083df430db1a8d216a099fa81","collectionName":"iot_user_managements","type":"collection"}

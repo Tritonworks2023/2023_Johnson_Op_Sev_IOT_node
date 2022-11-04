@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"36f86da0e3ea4ad8a7a5cfa96707c6c2","collectionName":"joininspections","type":"collection"}

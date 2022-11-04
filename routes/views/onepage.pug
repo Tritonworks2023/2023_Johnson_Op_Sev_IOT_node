@@ -1,0 +1,88 @@
+doctype html
+html
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    style.
+      * {
+      box-sizing: border-box;
+      }
+      /* Create four equal columns that floats next to each other */
+      .column {
+      float: left;
+      width: 50%;
+      padding: 10px;
+      }
+      .column2 {
+      float: left;
+      width: 25%;
+      padding: 10px;
+      }
+      .column3 {
+      float: left;
+      width: 75%;
+      padding: 10px;
+      }
+      .tab1 {
+      tab-size: 2;
+      }
+      /* Clear floats after the columns */
+      .row:after {
+      content: "";
+      display: table;
+      clear: both;
+      }
+      table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      }
+      td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      }
+      tr:nth-child(even) {
+      background-color: #dddddd;
+      }
+  body(style='padding: 3%;')
+    h3(style='text-align: center;')
+      | Johnson Lifts Private Limited
+    p(style='text-align: center;') #{branch_name}
+    .row
+      .column2
+        h3 #{customer_name}
+        h3
+          | #{customer_address}
+      .column3(style='text-align: right;')
+        h3 JOB NO #{job_no}
+        p DATE :-#{date_of_create}
+    .row
+      p Respected sir, 
+      p
+        span(style='color: white;') .......................
+        | With ref to our site visit /inspection we have found the following works are pending from your side & the same has been informed to your supervisor / engineer. We request you to complete the below pending work at the earliest to prepare lift shaft for material delivery and lift installation.
+    .row
+      table
+        thead
+          tr
+            th(style='padding: 10px;') S.No
+            th(style='padding: 10px;') TASK DESCRIPTION
+            th.text-right(style='padding: 10px;' width='5%') STATUS
+        tbody
+        each n in taskdetails
+          tr
+            td(style='padding: 10px;')= n.sno
+            td(style='padding: 10px;')= n.task
+            td.text-center(style='padding: 10px;')= n.status
+    .row
+      p Remarks :- 
+      p #{remarks}
+    .row
+      .column
+      .column(style='text-align: right;')
+        img(src='')
+        p Site Engineer Signature 
+        - var img = signature
+        img(src=img alt='Signature Not Found' width='150' height='100')
+        p Name :- #{signed_by}
+        p Designation :- #{signed_role}
