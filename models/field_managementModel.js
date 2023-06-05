@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema; 
 
 var field_managementSchema = new mongoose.Schema({  
@@ -22,5 +22,5 @@ var field_managementSchema = new mongoose.Schema({
   delete_status : Boolean,
 });
 mongoose.model('field_management', field_managementSchema);
-
+field_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('field_management');

@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 const Schema = mongoose.Schema; 
-
+var timestamps = require('mongoose-timestamp');
 var data_store_managementSchema = new mongoose.Schema({  
 
 user_id :  String,
@@ -29,5 +29,5 @@ data_store : Array,
 
 });
 mongoose.model('data_store_management', data_store_managementSchema);
-
+data_store_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('data_store_management');

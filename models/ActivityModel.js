@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 const Schema = mongoose.Schema; 
-
+var timestamps = require('mongoose-timestamp');
 var ActivitySchema = new mongoose.Schema({  
 
   Type:  String,
@@ -13,5 +13,5 @@ var ActivitySchema = new mongoose.Schema({
 
 });
 mongoose.model('Activity', ActivitySchema);
-
+ActivitySchema.plugin(timestamps);
 module.exports = mongoose.model('Activity');

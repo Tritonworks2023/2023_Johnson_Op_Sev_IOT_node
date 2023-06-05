@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var tab_user_managementSchema = new mongoose.Schema({  
 
   user_id:  String,
@@ -14,5 +15,6 @@ var tab_user_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('tab_user_management', tab_user_managementSchema);
+tab_user_managementSchema.plugin(timestamps);
 
 module.exports = mongoose.model('tab_user_management');

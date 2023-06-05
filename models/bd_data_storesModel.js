@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var bd_data_storesSchema = new mongoose.Schema({  
 
 
@@ -15,4 +16,5 @@ var bd_data_storesSchema = new mongoose.Schema({
 });
 
 mongoose.model('bd_data_stores', bd_data_storesSchema);
+bd_data_storesSchema.plugin(timestamps);
 module.exports = mongoose.model('bd_data_stores');

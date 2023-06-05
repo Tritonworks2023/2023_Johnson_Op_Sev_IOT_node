@@ -27,7 +27,6 @@ router.post('/create', async function(req, res) {
   delete_status : false,
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -71,14 +70,12 @@ router.get('/deletes', function (req, res) {
 
 
 router.post('/getlist_id',async function (req, res) {
-    // console.log(req.body);
-    // console.log(req.body);
+
          let final_data = []; 
          var keyword = req.body.search_string.toLowerCase();
          var user_management_detail = await user_management.findOne({_id:req.body.user_id});
          var group_details = await new_group_listModel.find({});
          // var group_details = await new_group_listModel.find({SMU_DEPT:user_management_detail.user_role});
-         // console.log(group_details);
          let temp_datas = [];
          group_details.forEach(element => {
           let a  = {
@@ -110,7 +107,6 @@ if (err) {
     // console.error(err.message);
     return;
 }    
- // console.log({fn: user_management_detail.user_id,jn:req.body.job_detail_id,status:'SUBMITTED'});
      // connection.execute("SELECT * FROM ESPD_OP_HDR",[], function
     // "SELECT *  FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO=:fn and SMU_JOBNO=:jn AND SMU_ACTIVITY_STATUS<>:'SUBMITTED'",
       connection.execute(
@@ -124,7 +120,6 @@ if (err) {
           doRelease(connection);
           return;
      }
-// console.log(result.rows);
  if(result.rows == 0){
 res.json({Status:"Success",Message:"No Record Found", Data : [] ,Code:200});
  }else {
@@ -137,13 +132,10 @@ results[result.metaData[i].name] = temp_data[i];
 }
  ary.push(results);   
  if(a == result.rows.length - 1){
-     // console.log(ary);
-    // console.log(temp_datas.length);
      let final_datas = [];
     for(let l = 0 ; l < temp_datas.length ; l++){
      for(let p = 0 ; p < ary.length ; p++){
         if(ary[p].SMU_UKEY == temp_datas[l].activity_ukey){
-            // console.log(req.body.job_detail_id,temp_datas[l].activity_ukey);
             final_datas.push(temp_datas[l]);
 
 oracledb.getConnection({
@@ -178,13 +170,11 @@ connection.execute(
     }
     } 
     if(l == temp_datas.length - 1){
-          // console.log("***************");
              var StateList = final_datas;
           if(StateList.length == 0 || req.body.search_string == ""){
             StateList = StateList.sort((a, b) => a.seqno > b.seqno ? 1 : -1);
             res.json({Status:"Success",Message:"group_detailModel List", Data : StateList ,Code:200});
           }else {
-            // console.log("tesing 2");
           for(let a = 0 ; a  < StateList.length; a ++){
           var active_text = StateList[a].group_detail_name.toLowerCase();
           if(active_text.indexOf(keyword) !== -1 == true){

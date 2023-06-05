@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
-
+var timestamps = require('mongoose-timestamp');
 var service_adminSchema = new mongoose.Schema({  
   first_name :  String,
   last_name : String,
@@ -16,4 +16,5 @@ var service_adminSchema = new mongoose.Schema({
 });
 
 mongoose.model('service_admin', service_adminSchema);
+service_adminSchema.plugin(timestamps);
 module.exports = mongoose.model('service_admin');

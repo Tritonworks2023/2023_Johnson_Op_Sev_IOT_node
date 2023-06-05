@@ -16,7 +16,6 @@ router.post('/create', async function(req, res) {
   activedetail_updated_by : req.body.activedetail_updated_by || ""
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }

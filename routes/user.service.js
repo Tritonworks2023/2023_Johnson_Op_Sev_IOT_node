@@ -14,10 +14,9 @@ module.exports = {
 };
 
 async function careateLoginHistory(personData,ipAddress) {
-    console.log("ipAddress ",ipAddress);
+
     let response = {};
-    const finduser =  await loginHistorySchema.find({ email: personData.email });
-    // console.log("personData ",personData);
+    var finduser =  await loginHistorySchema.find({ email: personData.email });
  
     var tempflag = false;
     finduser && finduser.forEach(element => {
@@ -45,18 +44,18 @@ async function careateLoginHistory(personData,ipAddress) {
 }
 
 async function authenticate(body) {
-    console.log("userFindData ",body);
+
     var email =body.email;
     var password =body.password;
-    const userFindData = await userSchema.findOne({email : email});
-    const userData = await userSchema.findOne({email : email, password: password});
+    var userFindData = await userSchema.findOne({email : email});
+    var userData = await userSchema.findOne({email : email, password: password});
    
    
     if(userFindData){
         if(userData){
-            console.log("ipAddress ",body);
+
             await careateLoginHistory(userData,body.ipAddress).then(ee=>{
-                console.log("ee ",ee);
+
                 if(ee =="More User logged in!!!"){
                     throw 'Invalid user';
                     
@@ -70,7 +69,7 @@ async function authenticate(body) {
         }else{
             throw 'Username or password incorrect';
         }
-      //  console.log("userData ",userData);
+
        
     }else{
         throw 'Invalid user';
@@ -84,7 +83,7 @@ async function authenticate(body) {
 
 async function createUserDetails(personData) {
     let response = {};
-    const finduser =  await userSchema.findOne({ customername: personData.customername });
+    var finduser =  await userSchema.findOne({ customername: personData.customername });
                    if(!finduser){
                        let COUNT = await userSchema.countDocuments();
                        var Details = new userSchema();
@@ -114,7 +113,6 @@ async function createUserDetails(personData) {
 
 
 async function updateUserDetails(personData) {
-    console.log("personData",personData)
    
                 let updateResult =  await userSchema.findOneAndUpdate( { _id: personData.id },
                        {
@@ -142,7 +140,7 @@ async function updateUserDetails(personData) {
 }
 
 async function getUserList() {
-    const finduser =  await userSchema.find();
+    var finduser =  await userSchema.find();
  
        if(finduser){
            return finduser;
@@ -153,8 +151,7 @@ async function getUserList() {
 
 
 async function findUserDetails(body) {
-    const finduser =  await userSchema.findOne({"_id":body.id});
-    console.log("finduser",finduser)
+    var finduser =  await userSchema.findOne({"_id":body.id});
        if(finduser){
            return finduser;
        }else{
@@ -165,8 +162,7 @@ async function findUserDetails(body) {
 
 
 async function deleteUser(body) {
-    console.log("personData",body)
-    const deleteRocord = await loginHistorySchema.deleteMany({"userid":body.id});
+    var deleteRocord = await loginHistorySchema.deleteMany({"userid":body.id});
        if(deleteRocord){
            return  "File removed successfully"
        }else{
@@ -176,8 +172,7 @@ async function deleteUser(body) {
 
 
 async function deleteUserDetails(body) {
-    console.log("personData",body)
-    const deleteRocord = await userSchema.deleteMany({"_id":body.id});
+    var deleteRocord = await userSchema.deleteMany({"_id":body.id});
        if(deleteRocord){
            return  "File removed successfully"
        }else{

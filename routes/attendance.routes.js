@@ -6,6 +6,11 @@ router.use(bodyParser.json());
 var attendanceModel = require('./../models/attendanceModel');
 
 
+
+// ******************************************************************************************************************************************************************************
+// OPERATION ATTENDANCE CREATE - MOBILE
+// ******************************************************************************************************************************************************************************
+
 router.post('/create', async function(req, res) {
   try{
         await attendanceModel.create({
@@ -97,7 +102,6 @@ attendance_end_time: req.body.attendance_end_time,
 // // DELETES A USER FROM THE DATABASE
 router.post('/admin_delete', function (req, res) {
       attendanceModel.findByIdAndRemove(req.body._id, function (err, user) {
-        console.log(err);
           if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
 
           res.json({Status:"Success",Message:"activedetail_management Deleted successfully", Data : {} ,Code:200});

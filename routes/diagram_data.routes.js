@@ -31,7 +31,6 @@ router.post('/create', async function(req, res) {
 
          }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -96,8 +95,6 @@ router.get('/getconnection', function (req, res) {
                 doRelease(connection);
                 return;
               }
-              console.log(result.metaData);
-              console.log(result.rows);
               doRelease(connection);
              });
      });

@@ -6,6 +6,10 @@ router.use(bodyParser.json());
 var service_activityModel = require('./../models/service_activityModel');
 
 
+
+// ******************************************************************************************************************************************************************************
+// SERVICE ACTIVITY CREATE - ADMIN PANEL
+// ******************************************************************************************************************************************************************************
 router.post('/create', async function(req, res) {
   try{
 
@@ -17,7 +21,6 @@ router.post('/create', async function(req, res) {
   service_type : req.body.service_type,
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -42,20 +45,28 @@ router.post('/getlist_id', function (req, res) {
 });
 
 
-
+// ******************************************************************************************************************************************************************************
+// SERVICE ACTIVITY GETLIST - ADMIN PANEL
+// ******************************************************************************************************************************************************************************
 router.get('/getlist', function (req, res) {
         service_activityModel.find({}, function (err, Functiondetails) {
           res.json({Status:"Success",Message:"Functiondetails", Data : Functiondetails ,Code:200});
         });
 });
 
-
+// ******************************************************************************************************************************************************************************
+// SERVICE ACTIVITY EDIT - ADMIN PANEL
+// ******************************************************************************************************************************************************************************
 router.post('/edit', function (req, res) {
         service_activityModel.findByIdAndUpdate(req.body._id, req.body, {new: true}, function (err, UpdatedDetails) {
             if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
              res.json({Status:"Success",Message:"Functiondetails Updated", Data : UpdatedDetails ,Code:200});
         });
 });
+
+// ******************************************************************************************************************************************************************************
+// SERVICE ACTIVITY DELETE - ADMIN PANEL
+// ******************************************************************************************************************************************************************************
 // // DELETES A USER FROM THE DATABASE
 router.post('/delete', function (req, res) {
       service_activityModel.findByIdAndRemove(req.body.Activity_id, function (err, user) {

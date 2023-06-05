@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
-
+var timestamps = require('mongoose-timestamp');
 var diagram_dataSchema = new mongoose.Schema({  
   activedetail_id : String,
   job_no_id : String,
@@ -21,5 +21,5 @@ var diagram_dataSchema = new mongoose.Schema({
   update_reason : String,
 });
 mongoose.model('diagram_data', diagram_dataSchema);
-
+diagram_dataSchema.plugin(timestamps);
 module.exports = mongoose.model('diagram_data');

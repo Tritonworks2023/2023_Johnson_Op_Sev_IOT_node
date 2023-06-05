@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var attendanceSchema = new mongoose.Schema({  
   attendance_name :  String,
   attendance_start_date : String,
@@ -17,4 +18,5 @@ var attendanceSchema = new mongoose.Schema({
   attendance_created_by : String,
 });
 mongoose.model('attendance', attendanceSchema);
+attendanceSchema.plugin(timestamps);
 module.exports = mongoose.model('attendance');

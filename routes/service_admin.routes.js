@@ -41,7 +41,6 @@ router.post('/create', async function(req, res) {
 
        }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -69,9 +68,7 @@ router.get('/getlist', function (req, res) {
 
 
 router.post('/fetch_single_userstatus',async function (req, res) { 
-    // console.log(req.body);
     var user_detail_value = await service_user_management.findOne({user_mobile_no: req.body.user_mobile_no});
-    // console.log(user_detail_value);
     var br_user_detail  =  await breakdown_managementModel.find({SMU_SCH_MECHCELL : req.body.user_mobile_no,SMU_SCH_SERTYPE : 'B'});
     var pm_user_detail  =  await breakdown_managementModel.find({SMU_SCH_MECHCELL : req.body.user_mobile_no,SMU_SCH_SERTYPE : 'P'});
     var br_mr_user_detail  =  await breakdown_mr_data_managementModel.find({JLS_SCHM_ENGR_PHONE : req.body.user_mobile_no,JLS_SCHM_SERTYPE : 'B'});
@@ -80,20 +77,12 @@ router.post('/fetch_single_userstatus',async function (req, res) {
     var pr_user_detail  =  await part_reply_service_managementModel.find({SMU_ACK_MOBILENO : req.body.user_mobile_no});
     var audit_user_detail  =  await audit_data_managementModel.find({OM_OSA_MOBILE : req.body.user_mobile_no});
 
-    console.log(br_user_detail.length);
-      console.log(pm_user_detail.length);
-        console.log(br_mr_user_detail.length);
-          console.log(pm_mr_user_detail.length);
-            console.log(lr_user_detail.length);
-              console.log(pr_user_detail.length);
-                console.log(audit_user_detail.length);
 
                 var final_value_data = [];
 
 
     step1();
      function step1(){
-        console.log('Step 1');
        if(br_user_detail.length == 0){ 
            step2();
        } else {
@@ -117,7 +106,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
        }
      }
     function step2(){
-           console.log('Step 2');
        if(pm_user_detail.length == 0){ 
            step3();
        } else {
@@ -144,7 +132,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
 
 
     function step3(){
-                   console.log('Step 3');
        if(br_mr_user_detail.length == 0){ 
            step4();
        } else {
@@ -170,7 +157,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
 
 
     function step4(){
-                   console.log('Step 4');
        if(pm_mr_user_detail.length == 0){ 
            step5();
        } else {
@@ -193,7 +179,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
        }
      }
     function step5(){
-                   console.log('Step 5');
        if(lr_user_detail.length == 0){ 
            step6();
        } else {
@@ -218,7 +203,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
      }
 
      function step6(){
-                   console.log('Step 6');
        if(pr_user_detail.length == 0){ 
            step7();
        } else {
@@ -245,7 +229,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
      }
 
         function step7(){
-                   console.log('Step 7');
        if(audit_user_detail.length == 0){ 
            step8();
        } else {
@@ -272,7 +255,6 @@ router.post('/fetch_single_userstatus',async function (req, res) {
      }
 
 function step8(){
-         console.log('Step 8');
          var last_date_and_time = new Date(final_value_data[0].last_time);
          for(let a = 0; a < final_value_data.length ; a++){
                 var  current_date_and_time = new Date(final_value_data[a].last_time);
@@ -281,7 +263,6 @@ function step8(){
    
                    }
            if(a == final_value_data.length - 1){
-                console.log(last_date_and_time);
                 step9(last_date_and_time);
            }
          }
@@ -296,8 +277,10 @@ function step8(){
 }
 
 function step9(last_date){
+ 
+ console.log(last_date);
 
-    console.log(last_date);
+
 
     let a = {
         last_login : user_detail_value.last_login_time,
@@ -317,11 +300,8 @@ function step9(last_date){
 
 
 router.post('/service_list',async function (req, res) {
-      console.log(req.body);
 
       var user_detail = await service_sub_adminMdodel.findOne({mobile_no:req.body.user_mobile_no});
-      console.log(user_detail);
-
       let a = [];
                 user_detail.access_live.forEach(element => {
                     a.push({
@@ -336,11 +316,9 @@ router.post('/service_list',async function (req, res) {
 
 router.post('/job_list',async function (req, res) {
     // req.body.user_mobile_no = '7358780824';
-    console.log(req.body);
       let a = [];
     if(req.body.service_name == 'Breakdown Serivce'){
     var user_detail  =  await breakdown_managementModel.find({SMU_SCH_MECHCELL : req.body.user_mobile_no,SMU_SCH_SERTYPE : 'B',"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.SMU_SCH_JOBNO,
@@ -351,7 +329,6 @@ router.post('/job_list',async function (req, res) {
 
     if(req.body.service_name == 'Preventive Maintenance'){
     var user_detail  =  await breakdown_managementModel.find({SMU_SCH_MECHCELL : req.body.user_mobile_no,SMU_SCH_SERTYPE : 'P',"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.SMU_SCH_JOBNO,
@@ -362,7 +339,6 @@ router.post('/job_list',async function (req, res) {
 
      if(req.body.service_name == 'Breakdown MR Approval'){
     var user_detail  =  await breakdown_mr_data_managementModel.find({JLS_SCHM_ENGR_PHONE : req.body.user_mobile_no,JLS_SCHM_SERTYPE : 'B',"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.JLS_SCHM_JOBNO,
@@ -374,7 +350,6 @@ router.post('/job_list',async function (req, res) {
 
      if(req.body.service_name == 'Preventive MR Approval'){
     var user_detail  =  await breakdown_mr_data_managementModel.find({JLS_SCHM_ENGR_PHONE : req.body.user_mobile_no,JLS_SCHM_SERTYPE : 'P',"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.SMU_SCH_JOBNO,
@@ -386,7 +361,6 @@ router.post('/job_list',async function (req, res) {
 
      if(req.body.service_name == 'LR SERVICE'){
     var user_detail  =  await lr_service_managementModel.find({SMU_SEN_MOBILENO : req.body.user_mobile_no,"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.SMU_SCQH_JOBNO,
@@ -398,7 +372,6 @@ router.post('/job_list',async function (req, res) {
 
      if(req.body.service_name == 'Parts Replacement ACK'){
     var user_detail  =  await part_reply_service_managementModel.find({SMU_ACK_MOBILENO : req.body.user_mobile_no,"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.SMU_ACK_JOBNO,
@@ -409,7 +382,6 @@ router.post('/job_list',async function (req, res) {
 
     if(req.body.service_name == 'AUDIT'){
     var user_detail  =  await audit_data_managementModel.find({OM_OSA_MOBILE : req.body.user_mobile_no,"JOB_STATUS": "Not Started"});
-     console.log(user_detail.length);
         user_detail.forEach(element => {
         a.push({
             job_no : element.OM_OSA_JOBNO,
@@ -424,7 +396,6 @@ router.post('/job_list',async function (req, res) {
 
 
 router.post('/customer_details',async function (req, res) {
-    console.log(req.body);
     // req.body.service_name = 'Preventive Maintenance';
    if(req.body.service_name == 'Breakdown Serivce'){
     var user_detail  =  await breakdown_managementModel.findOne({SMU_SCH_COMPNO:req.body.key_value});
@@ -525,7 +496,6 @@ router.post('/customer_details',async function (req, res) {
 
      if(req.body.service_name == 'Parts Replacement ACK'){
     var user_detail  =  await part_reply_service_managementModel.findOne({SMU_ACK_COMPNO : req.body.key_value});
-     console.log(user_detail);
                  let a = {
     job_id : user_detail.SMU_ACK_JOBNO,
     customer_name : user_detail.SMU_ACK_ENGRNAME,
@@ -576,16 +546,16 @@ router.post('/customer_details',async function (req, res) {
 
 router.post('/getlist_userlist',async function (req, res) {
       var user_detail = await service_sub_adminMdodel.findOne({mobile_no:req.body.user_mobile_no});
-      console.log(user_detail.employee_detail.length);
+      
+      if(user_detail == null){
+          res.json({Status:"Failed",Message:"Contact Admin", Data : [] ,Code:404});
+      } else{
       recall(0);
-      let a = [];
+      var a = [];
      async function recall(index_value) {
            if(index_value < user_detail.employee_detail.length){
             var user_detail_value  =  await service_user_management.findOne({user_mobile_no: user_detail.employee_detail[index_value].user_mobile_no});
-            console.log(user_detail_value);
-            
             if(user_detail_value !== null){
-            console.log(user_detail_value.user_type);
             var status = 'Admin';
             if(user_detail_value.user_type == 'Log In'){
                 status = 'USER';
@@ -600,16 +570,16 @@ router.post('/getlist_userlist',async function (req, res) {
             user_phone_no: user_detail.employee_detail[index_value].user_mobile_no
             }
             );
-            }
-
-         
-             var count = index_value + 1;
+            }         
+            var count = index_value + 1;
             recall(count);
            }else{
             res.json({Status:"Success",Message:"getlist_userlist", Data : a ,Code:200});
            }
+       }   
+      }
 
-       }       
+    
 });
 
 

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var service_attendanceSchema = new mongoose.Schema({  
   user_mobile_no : String,
   user_name : String,
@@ -16,4 +17,5 @@ var service_attendanceSchema = new mongoose.Schema({
   attendance_data : Array,
 });
 mongoose.model('service_attendance', service_attendanceSchema);
+service_attendanceSchema.plugin(timestamps);
 module.exports = mongoose.model('service_attendance');

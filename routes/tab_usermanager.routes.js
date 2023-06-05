@@ -7,7 +7,6 @@ var tab_user_management = require('./../models/tab_usermanagerModel');
 
 
 router.post('/create', async function(req, res) {
-  console.log(req.body);
   try{
         await tab_user_management.create({  
   user_id:  req.body.user_id || "",
@@ -22,7 +21,6 @@ router.post('/create', async function(req, res) {
 
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }

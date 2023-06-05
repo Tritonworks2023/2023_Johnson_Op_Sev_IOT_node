@@ -7,7 +7,6 @@ var tab_form3Model = require('./../models/tab_form3Model');
 var oracledb = require('oracledb');
 
 router.post('/create', async function(req, res) {
-    // console.log("*8888888*",req.body);
   try{
         await tab_form3Model.create({
              collection_type : req.body.collection_type,
@@ -33,14 +32,11 @@ router.post('/create', async function(req, res) {
              created_by : req.body.created_by,
         }, 
         function (err, user) {
-        console.log(err)
 
 
-// console.log('77777777777777',req.body.rtgs_no)
 if(req.body.rtgs_no == ''){
     req.body.rtgs_no = req.body.cheq_no;
 }
-console.log('77777777777777',req.body.rtgs_no);
 
 
 
@@ -54,17 +50,14 @@ if (err) {
     console.error(err.message);
     return;
 }
-console.log('77777777777777',req.body.rtgs_no)
 if(req.body.rtgs_no == ''){
     req.body.rtgs_no = req.body.cheq_no;
 }
 
-console.log("VALUES SUBMITTED");
 res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
 
 var todayDate = new Date().toISOString().slice(0, 10);
 
-console.log('0000000000',todayDate);
 
 const myArray1 = todayDate.split("-");
 var month_list = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun" ,"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -88,12 +81,15 @@ var details = {
     JLS_OTHER2_AMT : req.body.ded_other_two_value,
     JLS_REMARKS : req.body.remarks,
     JLS_MOBILE : req.body.created_by,
+    JLS_JOBTYPE : req.body.collection_value.substring(0, 1),
+    JLS_TRANS_TYPE : req.body.collection_type.substring(0, 1),
 };
+
 
      connection.execute(
              `INSERT INTO JLSMART_DAILY_COLL_HDR (JLS_ENTRY_DATE, JLS_AGCODE, JLS_CHQ_UTR_NO, JLS_CHQ_DATE, JLS_BANK_IFSC, JLS_CHQ_AMT,
-JLS_THIRDPARTY, JLS_TDS, JLS_GST, JLS_OTHER1, JLS_OTHER1_AMT, JLS_OTHER2, JLS_OTHER2_AMT, JLS_REMARKS,JLS_MOBILE) VALUES (:JLS_ENTRY_DATE, :JLS_AGCODE, :JLS_CHQ_UTR_NO, :JLS_CHQ_DATE, :JLS_BANK_IFSC, :JLS_CHQ_AMT,
-:JLS_THIRDPARTY, :JLS_TDS, :JLS_GST, :JLS_OTHER1, :JLS_OTHER1_AMT, :JLS_OTHER2, :JLS_OTHER2_AMT, :JLS_REMARKS, :JLS_MOBILE)`,
+JLS_THIRDPARTY, JLS_TDS, JLS_GST, JLS_OTHER1, JLS_OTHER1_AMT, JLS_OTHER2, JLS_OTHER2_AMT, JLS_REMARKS,JLS_MOBILE , JLS_JOBTYPE,JLS_TRANS_TYPE) VALUES (:JLS_ENTRY_DATE, :JLS_AGCODE, :JLS_CHQ_UTR_NO, :JLS_CHQ_DATE, :JLS_BANK_IFSC, :JLS_CHQ_AMT,
+:JLS_THIRDPARTY, :JLS_TDS, :JLS_GST, :JLS_OTHER1, :JLS_OTHER1_AMT, :JLS_OTHER2, :JLS_OTHER2_AMT, :JLS_REMARKS, :JLS_MOBILE, :JLS_JOBTYPE, :JLS_TRANS_TYPE)`,
                 details,
         {autoCommit: true},
         function (err, result1) {
@@ -185,15 +181,14 @@ function doRelease(connection) {
 });
 }
 });
-
-
- 
         });
 }
 catch(e){
-      console.log(e);
       res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
 }
+
+
+
 });
 
 

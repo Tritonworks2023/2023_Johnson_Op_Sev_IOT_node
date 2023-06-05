@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var service_activitySchema = new mongoose.Schema({  
   service_name :  String,
   service_code :  String,
@@ -10,4 +11,5 @@ var service_activitySchema = new mongoose.Schema({
 
 
 mongoose.model('service_activity', service_activitySchema);
+service_activitySchema.plugin(timestamps);
 module.exports = mongoose.model('service_activity');

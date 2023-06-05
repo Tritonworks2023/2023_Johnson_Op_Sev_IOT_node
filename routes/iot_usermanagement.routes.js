@@ -8,9 +8,7 @@ var oracledb = require('oracledb');
 
 
 router.post('/create', async function(req, res) {
-  console.log(req.body);
   var iot_user = await iot_usermanagement.findOne({phone_number:req.body.phone_number});
-  console.log(iot_user);
   if(iot_user == null){
   try{
         await iot_usermanagement.create({  
@@ -27,7 +25,6 @@ router.post('/create', async function(req, res) {
 
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -83,27 +80,20 @@ router.post('/admin_delete', function (req, res) {
 
 
 router.post('/get_lift_status', function (req, res) {
-// console.log(req.body.lift_detail);
-// req.body.lift_detail = ["L-P2909"];
 req.body.lift_detail = ["L-P2909"];
 var text  = '';     
 req.body.lift_detail.forEach(element => {
-  // console.log(element);
   text = text +"'"+element+"',";
 });
 text = text.substring(0, text.length-1);
-// console.log(text);
 oracledb.getConnection({
       user: "JLPLIOT",
       password: "JLPLIOT",
       connectString: "(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.191)(PORT = 1521))(CONNECT_DATA =(SID = jiot)))"
 }, function(err, connection) {
 if (err) {
-    // console.error(err.message);
     return;
 }
-// in ('"+req.body.job_status_type+"','JAN')
-// console.log('select SLIFTID, SFLRSTAT2, SRUNSTAT2 from IOT_MONGOSCHED_DTL_DEMO where SLIFTID in ('+text+')');
 connection.execute(
             'select SLIFTID, SFLRSTAT2, SRUNSTAT2 from IOT_MONGOSCHED_DTL_DEMO where SLIFTID in ('+text+')',
             {},
@@ -113,7 +103,6 @@ connection.execute(
           doRelease(connection);
           return;
      }
-     // console.log(result);
 var ary = [];
 for(let a = 0 ; a < result.rows.length ; a++){
 var temp_data = result.rows[a];

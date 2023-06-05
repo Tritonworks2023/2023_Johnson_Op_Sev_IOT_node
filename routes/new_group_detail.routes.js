@@ -25,7 +25,6 @@ router.post('/create', async function(req, res) {
   SMU_ERRDESC : req.body.SMU_ERRDESC || "",
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -70,15 +69,13 @@ if (err) {
      }
      else {
 
-// console.log("record Count",result.rows.length);   
-// console.log("Row Count",result.metaData.length);        
+      
 for(let a = 0 ; a < result.rows.length;a++){
 var temp_data = result.rows[a];
 var results = {};
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
     var total_count = ary.length + 1;
@@ -89,7 +86,6 @@ results[result.metaData[i].name] = temp_data[i];
         if(temp_count == total_count){
         res.json({Status:"Success",Message:"Respose Data", Data : ary ,Code:200});    
         } else {
-        // console.log(temp_count,total_count);
      var response =  ary[temp_count];
 try{
   new_group_listModel.create({
@@ -110,7 +106,6 @@ try{
   DATEOFFETCH : new Date()
         }, 
         function (err, user) {
-          // console.log(user)
 oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -258,14 +253,12 @@ if (err) {
       res.json({Status:"Success",Message:"Respose Data", Data : ary ,Code:200});  
      }
      else {
-// console.log(result.rows);
 for(let a = 0 ; a < result.rows.length;a++){
 var temp_data = result.rows[a];
 var results = {};
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
  res.json({Status:"Success",Message:"Response", Data : ary ,Code:200});
@@ -306,14 +299,12 @@ if (err) {
       res.json({Status:"Success",Message:"Respose Data", Data : ary ,Code:200});  
      }
      else {
-// console.log(result.rows);
 for(let a = 0 ; a < result.rows.length;a++){
 var temp_data = result.rows[a];
 var results = {};
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
  res.json({Status:"Success",Message:"Response", Data : ary ,Code:200});
@@ -366,23 +357,17 @@ for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
  ary.push(results);   
- // console.log("Resutl Data",ary);
  if(a == result.rows.length - 1){
     var total_count = ary.length;
     var temp_count = 0;
     recall();
      function recall() {
-        // console.log("Test  1",ary[temp_count]);
-        // console.log("Test  2",temp_count,total_count);
         if(temp_count == total_count){
      res.json({Status:"Success",Message:"Update Successfully", Data : {} ,Code:200});
         } else {
      var response =  ary[temp_count];
-     // console.log(response.SMU_SEQNO);
-     // console.log(response);
     new_group_listModel.findOneAndUpdate({SMU_SEQNO: response.SMU_SEQNO}, {$set:response}, {new: true}, (err, doc) => {
     if (err) {
-        // console.log("Something wrong when updating data!");
     }else{
      // res.json({Status:"Success",Message:"Update Successfully", Data : {} ,Code:200});
     }

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema; 
 
 var breakdown_data_managementSchema = new mongoose.Schema({  
@@ -29,9 +29,10 @@ var breakdown_data_managementSchema = new mongoose.Schema({
   tech_signature : String,
   eng_singature : String,
   user_mobile_no : String,
+  current_and_last_update_time : Date,
 
 
 });
 mongoose.model('breakdown_data_management', breakdown_data_managementSchema);
-
+breakdown_data_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('breakdown_data_management');

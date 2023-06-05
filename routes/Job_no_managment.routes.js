@@ -25,7 +25,6 @@ router.post('/create', async function(req, res) {
   job_detail_updated_by : req.body.job_detail_updated_by || "",
   update_reason : req.body.update_reason || "",        }, 
         function (err, user) {
-          // console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -63,8 +62,7 @@ router.get('/getconnection', function (req, res) {
                 doRelease(connection);
                 return;
               }
-              // console.log(result.metaData);
-              // console.log(result.rows);
+             
               doRelease(connection);
              });
      });
@@ -102,7 +100,6 @@ router.post('/getlist_id', function (req, res) {
 
 
 router.post('/getlist_id1', function (req, res) {
-    // console.log(req.body);
 if(req.body.request_type == 'New'){
         let final_data = []; 
          var keyword = req.body.search_string.toLowerCase();
@@ -128,17 +125,13 @@ if(req.body.request_type == 'New'){
         Job_no_managmentModel.find({activedetail__id:req.body.activedetail__id}, function (err, StateList) {
           if(StateList.length == 0 || req.body.search_string == ""){
             if(store_data.length == 0){
-                   // console.log("Testing 1");
                 // final_data.push(StateList[a]);
                  res.json({Status:"Success",Message:"Job_no_managment List", Data : StateList ,Code:200});
             }else{
-                // console.log("Testing 2");           
             for(let a = 0 ; a  < StateList.length; a ++){  
               for(let c = 0; c < store_data.length ; c++){
-                // console.log(store_data[c].job_id,StateList[a]._id);
                  if(""+store_data[c].job_id == ""+StateList[a]._id){
                      final_data.push(StateList[a]);
-                     // console.log("testing 3");
                  }
               }
               if(a == StateList.length - 1){
@@ -174,7 +167,6 @@ if(req.body.request_type == 'New'){
 
 
 // router.post('/getlist_all', function (req, res) {
-//       console.log(req.body);
 //       if(req.body.request_type == "New"){
 //          let final_data = []; 
 //          var keyword = req.body.search_string.toLowerCase();
@@ -199,12 +191,9 @@ if(req.body.request_type == 'New'){
 //          let final_data = []; 
 //          var keyword = req.body.search_string.toLowerCase();
 //          data_store_managementModel.find({"user_id":req.body.user_id,"storage_status": "Pause"}, function (err, StateList) {
-//           console.log(StateList.length);
 //           if(StateList.length == 0 && req.body.search_string == ""){
 //             res.json({Status:"Success",Message:"Job_no_managment List", Data : StateList ,Code:200});
 //           }else {
-//           console.log("Test1");
-//           console.log(StateList);
 //           for(let a = 0 ; a  < StateList.length; a ++){
 //           var active_text = StateList[a].job_id.job_detail_no.toLowerCase();
 //           if(active_text.indexOf(keyword) !== -1 == true){
@@ -248,7 +237,6 @@ if (err) {
     // console.error(err.message);
     return;
 }
-      // console.log("SELECT * FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO='5754180487962' and SMU_ACTIVITY_STATUS<>'SUBMITTED'");
       connection.execute(
             "SELECT * FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO='5754180487962' and SMU_ACTIVITY_STATUS<>'SUBMITTED'",
             {},
@@ -258,7 +246,7 @@ if (err) {
           doRelease(connection);
           return;
      }
-     // console.log(result.rows);
+    doRelease(connection);
 if(result.rows.length == 0) {
     res.json({Status:"Success",Message:"Job_no_managment List", Data : [] ,Code:200});
 }
@@ -270,18 +258,14 @@ var results = {};
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
-    // console.log(ary);
 var final_result = [];
 function getUniqueListBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
 }
 const arr1  = getUniqueListBy(ary, 'SMU_JOBNO');
-// console.log(arr1);
 arr1.forEach(element => {
-  // console.log(element);
   let tem  = { 
         _id: element.SMU_JOBNO,
         activedetail__id : '61c55f858bc953743afdaa52',
@@ -310,17 +294,13 @@ arr1.forEach(element => {
           }
           }
           }
-
-
-   // res.json({Status:"Success",Message:"Respose Data", Data : ary ,Code:200});
  }
 }
 
 }
-     doRelease(connection);
    });
-});
-function doRelease(connection) {
+
+      function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -329,7 +309,7 @@ function doRelease(connection) {
    );
 }
 
-
+});
 });
 
 
@@ -339,9 +319,7 @@ function doRelease(connection) {
 
 router.post('/getlist_all',async function (req, res) {
       var Final_Data = [];
-      // console.log(req.body);
       var user_management_detail = await user_management.findOne({_id:req.body.user_id});
-      // console.log(user_management_detail);
       if(req.body.request_type == "New"){
          let final_data = []; 
          var keyword = req.body.search_string.toLowerCase();
@@ -355,15 +333,15 @@ if (err) {
     return;
 }
       connection.execute(
-            "SELECT * FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO=:fn and SMU_ACTIVITY_STATUS<>:status",
-            {fn:""+user_management_detail.user_id,status:'SUBMITTED'},
+            "SELECT * FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO=:fn AND SMU_ACTIVITY_STATUS NOT IN  ('SUBMITTED','DELETED')",
+            {fn:""+user_management_detail.user_id},
         {autoCommit: true},
         function (err, result) {
     if (err) { console.error(err.message);
           doRelease(connection);
           return;
      }
-     // console.log(result.rows);
+     doRelease(connection);
 if(result.rows.length == 0) {
     res.json({Status:"Success",Message:"Job_no_managment List", Data : [] ,Code:200});
 }
@@ -375,18 +353,14 @@ var results = {};
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
-    // console.log(ary);
 var final_result = [];
 function getUniqueListBy(arr, key) {
     return [...new Map(arr.map(item => [item[key], item])).values()]
 }
 const arr1  = getUniqueListBy(ary, 'SMU_JOBNO');
-// console.log(arr1);
 arr1.forEach(element => {
-  // console.log(element);
   let tem  = { 
         _id: element.SMU_JOBNO,
         activedetail__id : '61c55f858bc953743afdaa52',
@@ -415,17 +389,13 @@ arr1.forEach(element => {
           }
           }
           }
-
-
-   // res.json({Status:"Success",Message:"Respose Data", Data : ary ,Code:200});
  }
 }
 
 }
-     doRelease(connection);
    });
-});
-function doRelease(connection) {
+
+      function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -433,6 +403,9 @@ function doRelease(connection) {
       }
    );
 }
+
+});
+
         
       }
 
@@ -440,12 +413,10 @@ function doRelease(connection) {
          let final_data = []; 
          var keyword = req.body.search_string.toLowerCase();
          data_store_managementModel.find({"user_id":req.body.user_id,"storage_status": "Pause"}, function (err, StateList) {
-          // console.log(StateList.length);
           if(StateList.length == 0 && req.body.search_string == ""){
             res.json({Status:"Success",Message:"Job_no_managment List", Data : StateList ,Code:200});
           }else {
-          // console.log("Test1");
-          // console.log(StateList);
+     
           for(let a = 0 ; a  < StateList.length; a ++){
           var active_text = StateList[a].job_id.job_detail_no.toLowerCase();
           if(active_text.indexOf(keyword) !== -1 == true){
@@ -480,7 +451,6 @@ function doRelease(connection) {
 
 
 router.post('/fetch_by_id', function (req, res) {
-    // console.log(req.body.activedetail__id);
         Job_no_managmentModel.find({activedetail__id : req.body.activedetail__id}, function (err, Functiondetails) {
           res.json({Status:"Success",Message:"Job_no_managment", Data : Functiondetails ,Code:200});
         });
@@ -490,7 +460,6 @@ router.post('/fetch_by_id', function (req, res) {
 
 
 router.post('/fetch_address', function (req, res) {
-    console.log(req.body);
     oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -509,12 +478,12 @@ if (err) {
           doRelease(connection);
           return;
      }
+    doRelease(connection);
     const myArray = result.rows[0][0].split("\n");
     res.json({Status:"Success",Message:"Respose Data", Data : myArray ,Code:200});
-     doRelease(connection);
+
    });
-});
-function doRelease(connection) {
+      function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -522,12 +491,11 @@ function doRelease(connection) {
       }
    );
 }
-
+});
 });
 
 
 router.post('/fetch_rm_info', function (req, res) {
-    // console.log(req.body);
     oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -546,6 +514,7 @@ if (err) {
           doRelease(connection);
           return;
      }
+     doRelease(connection);
 var ary = [];
 for(let a = 0 ; a < reports.rows.length;a++){
 var temp_data = reports.rows[a];
@@ -553,18 +522,14 @@ var results = {}
 for (var i = 0; i < reports.metaData.length; ++i){
 results[reports.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == reports.rows.length - 1){
-    // console.log(ary[0]);
     res.json({Status:"Success",Message:"Respose Data", Data : ary[0], Code:200});
  
  }
 }
    });
-  
-});
-function doRelease(connection) {
+       function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -572,13 +537,15 @@ function doRelease(connection) {
       }
    );
 }
+  
+});
+
 
 });
 
 
 
 router.post('/fetch_rm_info_single', function (req, res) {
-    // console.log("888888888888",req.body);
     oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -598,6 +565,7 @@ if (err) {
           doRelease(connection);
           return;
      }
+       doRelease(connection);
 var ary = [];
 for(let a = 0 ; a < reports.rows.length;a++){
 var temp_data = reports.rows[a];
@@ -605,18 +573,15 @@ var results = {}
 for (var i = 0; i < reports.metaData.length; ++i){
 results[reports.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == reports.rows.length - 1){
-    // console.log(ary[0]);
     res.json({Status:"Success",Message:"Respose Data", Data : ary[0], Code:200});
  
  }
 }
    });
-  
-});
-function doRelease(connection) {
+
+       function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -624,6 +589,9 @@ function doRelease(connection) {
       }
    );
 }
+  
+});
+
 
 });
 
@@ -631,7 +599,6 @@ function doRelease(connection) {
 
 
 router.post('/fetch_rm_info_list', function (req, res) {
-    // console.log(req.body);
     oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -650,6 +617,7 @@ if (err) {
           doRelease(connection);
           return;
      }
+     doRelease(connection);
 var ary = [];
 for(let a = 0 ; a < reports.rows.length;a++){
 var temp_data = reports.rows[a];
@@ -657,18 +625,14 @@ var results = {}
 for (var i = 0; i < reports.metaData.length; ++i){
 results[reports.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == reports.rows.length - 1){
-    // console.log(ary[0]);
     res.json({Status:"Success",Message:"Respose Data", Data : ary, Code:200});
  
  }
 }
    });
-  
-});
-function doRelease(connection) {
+       function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
           console.error(err.message);
@@ -676,6 +640,9 @@ function doRelease(connection) {
       }
    );
 }
+  
+});
+
 
 });
 
@@ -684,10 +651,8 @@ function doRelease(connection) {
 
 
 router.post('/get_jobdetail_by_activtiy',async function (req, res) {
- // console.log(req.body);
  // req.body.SMU_TECHMOBNO = '9043456963';
  // req.body.SMU_UKEY = "ESPD-ACT1";
- console.log(req.body);
     oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -698,11 +663,12 @@ if (err) {
     return;
 }
        connection.execute(
-            "SELECT * FROM ESPD_OP_HDR WHERE SMU_UKEY=:SMU_UKEY and SMU_TECHMOBNO=:SMU_TECHMOBNO and SMU_ACTIVITY_STATUS<>:SMU_ACTIVITY_STATUS",
+            "SELECT * FROM ESPD_OP_HDR WHERE SMU_UKEY=:SMU_UKEY and SMU_TECHMOBNO=:SMU_TECHMOBNO and SMU_ACTIVITY_STATUS<>:SMU_ACTIVITY_STATUS and SMU_ACTIVITY_STATUS<>:SMU_ACTIVITY_STATUS_ONE",
             {
                 SMU_TECHMOBNO:req.body.SMU_TECHMOBNO,
                 SMU_UKEY:req.body.SMU_UKEY,
-                SMU_ACTIVITY_STATUS : 'SUBMITTED'
+                SMU_ACTIVITY_STATUS : 'SUBMITTED',
+                SMU_ACTIVITY_STATUS_ONE : 'DELETED'
             },
         {autoCommit: true},
         function (err, reports) {
@@ -710,6 +676,7 @@ if (err) {
           doRelease(connection);
           return;
      }
+     doRelease(connection);
 var ary = [];
 
 if(reports.rows.length == 0){
@@ -725,7 +692,6 @@ var results = {}
 for (var i = 0; i < reports.metaData.length; ++i){
 results[reports.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);  
  if(a == reports.rows.length - 1){
     let temp_data = [];
@@ -750,8 +716,6 @@ results[reports.metaData[i].name] = temp_data[i];
 }
 }
    });
-  
-});
 function doRelease(connection) {
        connection.release(function(err) {
          if (err) {
@@ -760,10 +724,8 @@ function doRelease(connection) {
       }
    );
 }
-
-
-
-
+  
+});
 });
 
 

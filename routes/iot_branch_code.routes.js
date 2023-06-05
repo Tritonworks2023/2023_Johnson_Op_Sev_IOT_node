@@ -6,10 +6,10 @@ router.use(bodyParser.json());
 var iot_branch_codeModel = require('./../models/iot_branch_codeModel');
 
 
+
+
 router.post('/create', async function(req, res) {
-  console.log(req.body);
   var iot_branch_detail  =  await iot_branch_codeModel.findOne({branch_code:   req.body.branch_code});
-  console.log(iot_branch_detail);
   if(iot_branch_detail == null){
   try{
         await iot_branch_codeModel.create({  
@@ -22,7 +22,6 @@ router.post('/create', async function(req, res) {
   updated_at:  req.body.updated_at || ""
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -87,6 +86,11 @@ router.post('/admin_delete', function (req, res) {
       });
 });
 
+
+
+// ******************************************************************************************************************************************************************************
+// IOT DETAILS BRANCH LIST - ADMIN PANEL
+// ******************************************************************************************************************************************************************************
 
 router.get('/getlist', function (req, res) {
         iot_branch_codeModel.find({}, function (err, Functiondetails) {

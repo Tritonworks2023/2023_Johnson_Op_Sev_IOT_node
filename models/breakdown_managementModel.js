@@ -44,6 +44,11 @@ JOB_VIEW_STATUS : String,
 LAST_UPDATED_TIME : String, 
 JOB_START_TIME : String,
 JOB_END_TIME : String, 
+JOB_LOCATION : String,
+JOB_START_LAT : String,
+JOB_START_LONG : String,
+current_and_last_update_time : Date,
+
 });
 mongoose.model('breakdown_management', breakdown_managementSchema);
 breakdown_managementSchema.plugin(timestamps);

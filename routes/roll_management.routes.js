@@ -18,7 +18,6 @@ router.post('/create', async function(req, res) {
   last_updated_by : req.body.last_updated_by
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }

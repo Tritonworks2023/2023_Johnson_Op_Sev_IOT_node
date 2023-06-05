@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var service_user_managementSchema = new mongoose.Schema({  
+  
   user_mobile_no:  String,
   user_id : String,
   user_password :String,
@@ -13,6 +15,7 @@ var service_user_managementSchema = new mongoose.Schema({
   user_mob_os : String,
   user_mob_make : String,
   device_no : String,
+  device_id : String,
   organisation_name : String,
   status : String,
   mobile_issue_date : String,
@@ -23,7 +26,18 @@ var service_user_managementSchema = new mongoose.Schema({
   user_token : String,
   user_type : String,
   emp_type : String,
+  
+  login_lat : String,
+  login_long : String,
+  login_address : String,
+  logout_lat : String,
+  logout_long : String,
+  logout_address : String,
+
+
+
 });
 
 mongoose.model('service_user_management', service_user_managementSchema);
+service_user_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('service_user_management');

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var tab_form_three_managementSchema = new mongoose.Schema({  
 
             collection_type : String,
@@ -26,5 +27,5 @@ var tab_form_three_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('tab_form_three_management', tab_form_three_managementSchema);
-
+tab_form_three_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('tab_form_three_management');

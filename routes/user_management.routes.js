@@ -5,6 +5,8 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 var user_management = require('./../models/user_managementModel');
 
+var oracledb = require('oracledb');
+
 
 router.post('/create', async function(req, res) {
   try{
@@ -58,15 +60,56 @@ router.post('/getlist_fetch_id', function (req, res) {
 });
 
 
+router.get('/view_submitted_getlist_details',async function (req, res) {
+    var service_submitted_valueModel = require('./../models/service_submitted_valueModel');
+        service_submitted_valueModel.find({}, function (err, StateList) {
+          res.json({Status:"Success",Message:"view submitted getlist details", Data : StateList ,Code:200});
+        });
+});
+
+
+
+router.get('/view_submitted_getlist_details_by_type',async function (req, res) {
+    var service_submitted_valueModel = require('./../models/service_submitted_valueModel');
+        service_submitted_valueModel.find({"type":req.body.type}, function (err, StateList) {
+             var final_data = [];
+             for(let a = 0; a < StateList.length; a++){
+              final_data.push({
+            "_id": StateList[a]._id, 
+            "user_id": StateList[a].user_id, 
+            "job_id": StateList[a].job_id, 
+            "type": StateList[a].type, 
+            "date": StateList[a].date, 
+            "__v": 0
+              })
+             if(a == StateList.length - 1){
+                 res.json({Status:"Success",Message:"view submitted getlist details", Data : final_data ,Code:200});
+             }
+             }
+        });
+});
+
+
+
+router.post('/view_submitted_getlist_details_by_job_id',async function (req, res) {
+    var service_submitted_valueModel = require('./../models/service_submitted_valueModel');
+        service_submitted_valueModel.find({"job_id":req.body.job_id}, function (err, StateList) {
+          res.json({Status:"Success",Message:"view submitted getlist details", Data : StateList ,Code:200});
+        });
+});
+
+
+
+// ******************************************************************************************************************************************************************************
+// OPERATION LOGIN - MOBILE
+// ******************************************************************************************************************************************************************************
+
 
 router.post('/mobile/login_page', function (req, res) {
-    console.log(req.body);
         user_management.findOne({user_id:req.body.user_id,user_type : "Mobile",user_password:req.body.user_password}, function (err, StateList) {
             if(StateList == null){
               res.json({Status:"Failed",Message:"Account not found", Data : {} ,Code:404});
             } else {
-               // console.log(req.body);
-               console.log(StateList);
                res.json({Status:"Success",Message:"User Details", Data : StateList ,Code:200});
                // if(req.body.device_id == StateList.imie_code){
                //    res.json({Status:"Success",Message:"User Details", Data : StateList ,Code:200});
@@ -83,21 +126,51 @@ router.post('/mobile/login_page', function (req, res) {
 });
 
 
-router.get('/reload_data2',async function (req, res) {
-        var ref_code_details  =  await user_management.find({}).sort({index:1});
-        for(let a  = 0; a < ref_code_details.length ; a ++){
-         let d = {
-            user_role : "USER",
-         }
-         user_management.findByIdAndUpdate(ref_code_details[a]._id, d, {new: true}, function (err, UpdatedDetails) {
-            if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
-        });
-         if(a == ref_code_details.length - 1){
-            res.json({Status:"Success",Message:"group_detailModel Updated", Data : {} ,Code:200});
-         }
-        }
+// router.get('/reload_data2',async function (req, res) {
+//         var ref_code_details  =  await user_management.find({}).sort({index:1});
+//         for(let a  = 0; a < ref_code_details.length ; a ++){
+//          let d = {
+//             user_role : "USER",
+//          }
+//          user_management.findByIdAndUpdate(ref_code_details[a]._id, d, {new: true}, function (err, UpdatedDetails) {
+//             if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
+//         });
+//          if(a == ref_code_details.length - 1){
+//             res.json({Status:"Success",Message:"group_detailModel Updated", Data : {} ,Code:200});
+//          }
+//         }
 
-});
+// });
+
+
+
+
+// router.get('/OpenSession', function (req, res) {
+// oracledb.getConnection({
+//       user: "JLSMART",
+//       password: "JLSMART",
+//       connectString: "(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.112)(PORT = 1521))(CONNECT_DATA =(SID = jlpl)))"
+// }, function(err, connection) {
+// if (err) {
+//     // console.error(err.message);
+//     return;
+// }
+// connection.execute(
+//             "SELECT * from JLS_AUDIT_CHECKLIST where door_type=:door_type ORDER BY SLNO",
+//             {
+//                 door_type : req.body.service_type
+//             },
+//         {autoCommit: true},
+//         function (err, result) {
+//     if (err) { console.error(err.message);
+//           doRelease(connection);
+//           return;
+//      }
+//      res.json({Status:"Success",Message:"User management Updated", Data : result ,Code:200});
+// });
+// });
+// });
+
 
 
 router.post('/admin_delete', function (req, res) {

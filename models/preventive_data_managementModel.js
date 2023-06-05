@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var timestamps = require('mongoose-timestamp');
 const Schema = mongoose.Schema; 
 
 var preventive_data_managementSchema = new mongoose.Schema({  
@@ -32,5 +32,5 @@ SMU_SCH_SERTYPE  :  String,
 
 });
 mongoose.model('preventive_data_management', preventive_data_managementSchema);
-
+preventive_data_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('preventive_data_management');

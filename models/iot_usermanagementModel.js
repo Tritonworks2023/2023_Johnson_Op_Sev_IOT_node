@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var iot_user_managementSchema = new mongoose.Schema({  
   
   name :  String,
@@ -15,5 +16,5 @@ var iot_user_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('iot_user_management', iot_user_managementSchema);
-
+iot_user_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('iot_user_management');

@@ -19,7 +19,6 @@ router.post('/create', async function(req, res) {
   form_type : req.body.form_type || "",
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -97,7 +96,6 @@ router.get('/update_gorup_id',async function (req, res) {
     for(let a  = 0 ; a < sub_group_detail.length ; a++){
         sub_group_detailModel.findByIdAndUpdate(sub_group_detail[a]._id, c, {new: true}, function (err, UpdatedDetails) {
             if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
-            console.log(UpdatedDetails);
              
         });
         if(a == sub_group_detail.length - 1){

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var group_detail_managementSchema = new mongoose.Schema({  
 
   activity_id : String,
@@ -17,4 +18,5 @@ var group_detail_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('group_detail_management', group_detail_managementSchema);
+group_detail_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('group_detail_management');

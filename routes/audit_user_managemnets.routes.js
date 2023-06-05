@@ -59,13 +59,13 @@ router.post('/getlist_id', function (req, res) {
 
 
 router.post('/mobile/login_page', function (req, res) {
-    console.log(req.body);
+
         audit_user_managemnets.findOne({user_id:req.body.user_id,user_password:req.body.user_password}, function (err, StateList) {
             if(StateList == null){
               res.json({Status:"Failed",Message:"Account not found", Data : {} ,Code:404});
             } else {
-               // console.log(req.body);
-               console.log(StateList);
+
+
                res.json({Status:"Success",Message:"User Details", Data : StateList ,Code:200});
                // if(req.body.device_id == StateList.imie_code){
                //    res.json({Status:"Success",Message:"User Details", Data : StateList ,Code:200});

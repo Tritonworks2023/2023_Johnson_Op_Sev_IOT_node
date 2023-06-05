@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 const Schema = mongoose.Schema; 
-
+var timestamps = require('mongoose-timestamp');
 var job_no_managmentSchema = new mongoose.Schema({  
 
   activedetail_id:  {  
@@ -20,5 +20,5 @@ var job_no_managmentSchema = new mongoose.Schema({
   
 });
 mongoose.model('job_no_managment', job_no_managmentSchema);
-
+job_no_managmentSchema.plugin(timestamps);
 module.exports = mongoose.model('job_no_managment');

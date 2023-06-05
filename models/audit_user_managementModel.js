@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var audit_user_managementSchema = new mongoose.Schema({  
   user_id:  String,
   user_email_id : String,
@@ -17,5 +18,5 @@ var audit_user_managementSchema = new mongoose.Schema({
 
 
 mongoose.model('audit_user_management', audit_user_managementSchema);
-
+audit_user_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('audit_user_management');

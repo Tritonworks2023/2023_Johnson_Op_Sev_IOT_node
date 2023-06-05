@@ -37,8 +37,7 @@ router.post('/create', async function(req, res) {
   delete_status : false,
         }, 
         function (err, user) {
-          // console.log(user)
-          console.log(err)
+        
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
@@ -57,10 +56,13 @@ router.get('/deletes', function (req, res) {
 
 
 router.post('/getlist_id',async function (req, res) {
-console.log("888888888888",req.body);
  var group_detail  =  await new_group_listModel.findOne({_id:req.body.group_id});
- // console.log(group_detail);
- if(group_detail.SMU_UKEY == 'ESPD-ACT3')
+ if(group_detail == null){
+    console.log(req.body);
+    res.json({Status:"Failed",Message:"Retry Again later", Data : [] ,Code:404}); 
+ } else {
+
+     if(group_detail.SMU_UKEY == 'ESPD-ACT3')
  {
 oracledb.getConnection({
       user: "JLSMART",
@@ -93,9 +95,7 @@ order by 2`,
           doRelease(connection);
           return;
      }
-     // console.log(result.rows.length);
  if(result.rows.length == 0){
-    // console.log("response Send");
     res.json({Status:"Success",Message:"Respose Data", Data : [] ,Code:200}); 
 } else
 {
@@ -106,10 +106,8 @@ var results = {}
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
  if(a == result.rows.length - 1){
-     // console.log(ary);
      var temp_data = [];
      for(let a  = 0 ; a < ary.length; a++){
         let temp = 
@@ -137,12 +135,11 @@ results[result.metaData[i].name] = temp_data[i];
         }
         temp_data.push(temp);
         if(a == ary.length - 1){
-            // console.log( "1",temp_data.length);
              if (temp_data.length % 6 == 0)
              {
              temp_data.splice(temp_data.length - 1);
-             } 
-            // console.log("Data Existing");
+             }
+           temp_data = temp_data.sort((a, b) => a.index > b.index ? 1 : -1);  
            res.json({Status:"Success",Message:"Respose Data", Data : temp_data ,Submitted_status :"Not Submitted",Code:200}); 
         }
      }
@@ -164,12 +161,11 @@ function doRelease(connection) {
 else if(group_detail.SMU_UKEY == 'ESPD-ACT1')
 {
  var user_detail = await user_management.findOne({_id:req.body.user_id});
-// console.log("Form 1");
-// console.log("req",req.body);
+
 if(user_detail == null){
     user_detail = await user_management.findOne({_id:req.body.user_id});
 }
-// console.log("user_detail",user_detail);
+
 oracledb.getConnection({
       user: "JLSMART",
       password: "JLSMART",
@@ -180,7 +176,6 @@ if (err) {
     return;
 }
 
-// console.log(user_detail.user_id,req.body.job_id);
 connection.execute(
             "SELECT *  FROM ESPD_OP_HDR WHERE SMU_TECHMOBNO=:fn and SMU_UKEY=:uk and SMU_JOBNO=:jn",
             {fn: user_detail.user_id,uk:'ESPD-ACT1',jn:req.body.job_id},
@@ -191,8 +186,7 @@ connection.execute(
           return;
      }
 
-// console.log(result.rows);
-// console.log(result.metaData);
+
 
 var ary = [];
 for(let a = 0 ; a < result.rows.length; a++){
@@ -201,29 +195,55 @@ var results = {}
 for (var i = 0; i < result.metaData.length; ++i){
 results[result.metaData[i].name] = temp_data[i];
 }
- // console.log(results);
  ary.push(results);   
- // console.log(a,result.rows.length - 1);
  if(a == result.rows.length - 1){
     // res.json({Status:"Success",Message:"Updated", Data : ary[0],Code:200}); 
+
+
+
+var NO_OF_FLRSERVED = +ary[0].SMU_NOOF_FLOORS - +ary[0].SMU_BASE_FLOORS;
+
 
  if(ary[0].SMU_NOOF_FLOORS == null){
     ary[0].SMU_NOOF_FLOORS = 0;
  }else{
   ary[0].SMU_NOOF_FLOORS =  ary[0].SMU_NOOF_FLOORS - 1;
  }
- // console.log(ary[0].SMU_NOOF_FLOORS);
- let temp_val = [];
- for(let c = 0; c < +ary[0].SMU_NOOF_FLOORS; c++){
-    let end_count = c+1;
-    // console.log(end_count); 
+ if(ary[0].SMU_BASE_FLOORS == null) {
+    ary[0].SMU_BASE_FLOORS = 0;
+ } else {
+  // ary[0].SMU_BASE_FLOORS =  ary[0].SMU_BASE_FLOORS;
+  ary[0].SMU_BASE_FLOORS = -ary[0].SMU_BASE_FLOORS;
+ }
+
+var NO_OF_BASEMENT_FLOORS = ary[0].SMU_BASE_FLOORS;
+
+
+
+let temp_val = [];
+for(let d = +NO_OF_BASEMENT_FLOORS; d < 0; d++) {
+    let end_count = d+1;
     temp_val.push(
     { 
       "left": "",
-      "title": ""+c +" - "+ end_count
+      "title": ""+d +"( to )"+ end_count
     }
     );
  }
+
+ var temp_values2 = NO_OF_FLRSERVED - 1;
+ for(let c = 0; c < +temp_values2; c++){
+    let end_count = c+1;
+    temp_val.push(
+    { 
+      "left": "",
+      "title": ""+c +"( to )"+ end_count
+    }
+    );
+ }
+
+
+
 let left_temp = {
             "drop_down": [],
             "lift_list": temp_val,
@@ -232,6 +252,7 @@ let left_temp = {
             "group_id": req.body.group_id,
             "sub_group_id": req.body.sub_group_id,
             "field_name": "LIFT DETAILS",
+            "index": 14,
             "field_type": "Lift",
             "field_value": "",
             "field_length": ""+ary[0].SMU_NOOF_FLOORS,
@@ -244,13 +265,11 @@ let left_temp = {
             "delete_status": false,
             "__v": 0
 }
-// console.log(left_temp);
  var data_store_detail = await data_store_managementModel.findOne({
               user_id :  req.body.user_id,
               job_id : req.body.job_id,
               group_id : req.body.group_id
   });
- // console.log(data_store_detail,"Existing");
  let Final_datas = [];
  field_managementModel.find({ 
           group_id : req.body.group_id,
@@ -258,10 +277,8 @@ let left_temp = {
         }, function (err, StateList) {
           Final_datas = StateList;
   if(data_store_detail == null){
-      // console.log(Final_datas[Final_datas.length - 1]);
       // Final_datas.push(left_temp);
       Final_datas.splice(14, 0,left_temp);
-       // console.log( "2",Final_datas.length);
              if (Final_datas.length % 6 == 0)
              {
              Final_datas.splice(Final_datas.length - 1);
@@ -269,16 +286,26 @@ let left_temp = {
              if(Final_datas[Final_datas.length - 1].field_comments == 'Additional Remarks'){
                 Final_datas[Final_datas.length - 1].field_value = 'No Additional Remarks';
              }
-             // console.log(Final_datas[Final_datas.length - 1]);
+
+
+
+Final_datas.forEach(element => {
+
+  if(element.field_comments == 'NO_OF_FLRSERVED'){
+    element.field_value = NO_OF_FLRSERVED;
+
+  }
+  if(element.field_comments == 'NO_OF_BASEMENT_FLOORS'){
+    element.field_value = NO_OF_BASEMENT_FLOORS;
+
+  }
+});
+     Final_datas = Final_datas.sort((a, b) => a.index > b.index ? 1 : -1);
      res.json({Status:"Success",Message:"field management List", Data : Final_datas ,Submitted_status :"Not Submitted",Code:200});
    }else{
-    // console.log("testing1");
        let data_store = data_store_detail.data_store; 
        for(let a = 0; a < data_store.length; a++){
         if(data_store[a].group_id == req.body.group_id){
-          //       console.log("testing2");
-          // console.log(data_store[a].group_data);
-          //  console.log(data_store[a].group_data.length);
            if(data_store[a].group_data.length == 0){
             Final_datas = Final_datas;
             // res.json({Status:"Success",Message:"field management List", Data : Final_datas ,Code:200});
@@ -288,11 +315,8 @@ let left_temp = {
            } 
         }
         if(a == data_store.length - 1){
-        // console.log("testing3");
-        // console.log(Final_datas[Final_datas.length - 1]);
         // Final_datas.push(left_temp);
               Final_datas.splice(14, 0,left_temp);
-              // console.log( "3",Final_datas.length);
              if (Final_datas.length % 6 == 0)
              {
              Final_datas.splice(Final_datas.length - 1);
@@ -300,7 +324,18 @@ let left_temp = {
             if(Final_datas[Final_datas.length - 1].field_comments == 'Additional Remarks'){
                 Final_datas[Final_datas.length - 1].field_value = 'No Additional Remarks';
              }
-             // console.log(Final_datas[Final_datas.length - 1]);
+Final_datas.forEach(element => {
+    
+  if(element.field_comments == 'NO_OF_FLRSERVED'){
+    element.field_value = NO_OF_FLRSERVED;
+
+  }
+  if(element.field_comments == 'NO_OF_BASEMENT_FLOORS'){
+    element.field_value = NO_OF_BASEMENT_FLOORS;
+
+  }
+});
+          Final_datas = Final_datas.sort((a, b) => a.index > b.index ? 1 : -1);
           res.json({Status:"Success",Message:"field management List", Data : Final_datas, Submitted_status :"Not Submitted",Code:200});
         }
        }   
@@ -338,7 +373,6 @@ function doRelease(connection) {
               job_id : req.body.job_id,
               group_id : req.body.group_id
   });
- // console.log(data_store_detail,"Existing");
  let Final_datas = [];
  field_managementModel.find({ 
           group_id : req.body.group_id,
@@ -346,22 +380,16 @@ function doRelease(connection) {
         }, function (err, StateList) {
           Final_datas = StateList;
   if(data_store_detail == null){
-             // console.log( "4",Final_datas.length);
              if (Final_datas.length % 6 == 0)
              {
              Final_datas.splice(Final_datas.length - 1);
              } 
-             
-             // console.log(Final_datas[Final_datas.length - 1]);
+     Final_datas = Final_datas.sort((a, b) => a.index > b.index ? 1 : -1);     
      res.json({Status:"Success",Message:"field management List", Data : Final_datas ,Submitted_status :"Not Submitted",Code:200});
    }else{
-    // console.log("testing1");
        let data_store = data_store_detail.data_store; 
        for(let a = 0; a < data_store.length; a++){
         if(data_store[a].group_id == req.body.group_id){
-          //       console.log("testing2");
-          // console.log(data_store[a].group_data);
-          //  console.log(data_store[a].group_data.length);
            if(data_store[a].group_data.length == 0){
             Final_datas = Final_datas;
             // res.json({Status:"Success",Message:"field management List", Data : Final_datas ,Code:200});
@@ -371,16 +399,14 @@ function doRelease(connection) {
            } 
         }
         if(a == data_store.length - 1){
-                // console.log("testing3");
-                // console.log( "5",Final_datas.length);
              if (Final_datas.length % 6 == 0)
              {
              Final_datas.splice(Final_datas.length - 1);
              } 
-                 if(Final_datas[Final_datas.length - 1].field_comments == 'Additional Remarks'){
+                if(Final_datas[Final_datas.length - 1].field_comments == 'Additional Remarks'){
                 Final_datas[Final_datas.length - 1].field_value = 'No Additional Remarks';
              }
-             // console.log(Final_datas[Final_datas.length - 1]);
+          Final_datas = Final_datas.sort((a, b) => a.index > b.index ? 1 : -1);
           res.json({Status:"Success",Message:"field management List", Data : Final_datas, Submitted_status :"Not Submitted",Code:200});
         }
        }   
@@ -389,6 +415,17 @@ function doRelease(connection) {
 
 
  }
+
+
+ } 
+
+ 
+
+
+
+
+
+
 
 
 
@@ -402,17 +439,14 @@ function doRelease(connection) {
 
 
 router.post('/getlist_datas_test',async function (req, res) {
- console.log(req.body);
   // {fn: '427867'},
   // req.body.ST_MDH_SEQNO = '427867';
-  // console.log(req.body);  
 
  var data_store_detail = await data_store_managementModel.findOne({
               user_id :  req.body.user_id,
               job_id : req.body.job_id,
               group_id : req.body.group_id
   });
- // console.log(data_store_detail,"Existing");
 
     oracledb.getConnection({
       user: "JLSMART",
@@ -433,8 +467,7 @@ if (err) {
           doRelease(connection);
           return;
      }
-     // console.log(result.rows);
-     // console.log(result.metaData);
+
 var ary = [];
 for(let a = 0 ; a < result.rows.length;a++){
 var temp_data = result.rows[a];
@@ -446,7 +479,6 @@ results[result.metaData[i].name] = temp_data[i];
  if(a == result.rows.length - 1){
    var final_datas = []
     ary.forEach(element => {
-        // console.log(+element.ST_MDD_QTY);
     let dt = 
     {
             "ST_MDD_SEQNO": element.ST_MDD_SEQNO,
@@ -519,8 +551,6 @@ router.post('/getlist_datas', function (req, res) {
 //           doRelease(connection);
 //           return;
 //      }
-//      // console.log(result.rows);
-//      // console.log(result.metaData);
 // var ary = [];
 // for(let a = 0 ; a < result.rows.length;a++){
 // var temp_data = result.rows[a];
@@ -532,7 +562,7 @@ router.post('/getlist_datas', function (req, res) {
 //  if(a == result.rows.length - 1){
 //    var final_datas = []
 //     ary.forEach(element => {
-//         // console.log(+element.ST_MDD_QTY);
+
 //     let dt = 
 //     {
 //             // "serial_no":element.ST_MDD_SLNO,
@@ -685,14 +715,12 @@ router.post('/reload_data',async function (req, res) {
 
 router.get('/update_gorup_id',async function (req, res) {
 var sub_group_detail  =  await field_managementModel.find({group_id : "61e93852f5b6e53ca97b7a11"});
-    // console.log(sub_group_detail.length);
     let c = {
         "group_id": "629ede01886f5404a75d4a8f",
     }
     for(let a  = 0 ; a < sub_group_detail.length ; a++){
         field_managementModel.findByIdAndUpdate(sub_group_detail[a]._id, c, {new: true}, function (err, UpdatedDetails) {
             if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
-            // console.log(UpdatedDetails);
              
         });
         if(a == sub_group_detail.length - 1){

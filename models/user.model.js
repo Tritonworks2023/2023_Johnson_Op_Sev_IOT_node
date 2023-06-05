@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+var timestamps = require('mongoose-timestamp');
 
 const schema = new Schema({
     customername: { type: String,trim:true,uppercase:true  },
@@ -29,6 +30,7 @@ schema.set('toJSON', {
         // delete ret.password;
     }
 });
+
 
 module.exports = mongoose.model('user_Deatils', schema);
 

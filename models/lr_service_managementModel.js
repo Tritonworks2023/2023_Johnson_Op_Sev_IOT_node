@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var lr_service_managementSchema = new mongoose.Schema({  
   
 
@@ -36,6 +37,13 @@ var lr_service_managementSchema = new mongoose.Schema({
   JOB_END_TIME :  String,
 
 
+JOB_LOCATION : String,
+JOB_START_LAT : String,
+JOB_START_LONG : String,
+  current_and_last_update_time : Date,
+
+
+
 
 
 
@@ -43,4 +51,5 @@ var lr_service_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('lr_service_management', lr_service_managementSchema);
+lr_service_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('lr_service_management');

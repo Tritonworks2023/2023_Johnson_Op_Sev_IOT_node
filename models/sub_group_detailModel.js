@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var sub_group_detail_managementSchema = new mongoose.Schema({  
 
   group_id : String,
@@ -13,4 +14,5 @@ var sub_group_detail_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('sub_group_detail_management', sub_group_detail_managementSchema);
+sub_group_detail_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('sub_group_detail_management');

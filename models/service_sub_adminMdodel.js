@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var service_sub_adminSchema = new mongoose.Schema({  
 
   firstname : String,
@@ -18,4 +19,5 @@ var service_sub_adminSchema = new mongoose.Schema({
 
 });
 mongoose.model('service_sub_admin', service_sub_adminSchema);
+service_sub_adminSchema.plugin(timestamps);
 module.exports = mongoose.model('service_sub_admin');

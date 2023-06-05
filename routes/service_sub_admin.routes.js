@@ -6,12 +6,14 @@ router.use(bodyParser.json());
 var service_sub_adminMdodel = require('./../models/service_sub_adminMdodel');
 
 
+
+
+// ******************************************************************************************************************************************************************************
+// SERVICE SUB ADMIN CREATE 
+// ******************************************************************************************************************************************************************************
+
 router.post('/create', async function(req, res) {
-  
-  console.log(req.body);
-
   try{
-
         await service_sub_adminMdodel.create({
   firstname : req.body.firstname,
   lastname : req.body.lastname,
@@ -27,12 +29,10 @@ router.post('/create', async function(req, res) {
   last_login : new Date()
         }, 
         function (err, user) {
-          console.log(user)
         res.json({Status:"Success",Message:"Added successfully", Data : user ,Code:200}); 
         });
 }
 catch(e){
-      console.log(e);
       res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
 }
 });
@@ -53,7 +53,9 @@ router.post('/getlist_id', function (req, res) {
 });
 
 
-
+// ******************************************************************************************************************************************************************************
+// SERVICE FETCH SUB ADMIN DETAILS BY MOBILE
+// ******************************************************************************************************************************************************************************
 router.post('/fetch_data', function (req, res) {
         service_sub_adminMdodel.findOne({ mobile_no :  req.body.mobile_no}, function (err, StateList) {
             if(StateList == null){
@@ -72,8 +74,7 @@ router.post('/mobile/login_page',async function (req, res) {
             if(StateList == null){
               res.json({Status:"Failed",Message:"Account not found", Data : {} ,Code:404});
             } else {
-               console.log(req.body);
-               console.log(StateList);
+               
 
             let a = {
             "_id": StateList._id,
@@ -146,12 +147,18 @@ router.get('/getlist', function (req, res) {
 });
 
 
+// ******************************************************************************************************************************************************************************
+// SERVICE SUB ADMIN EDIT 
+// ******************************************************************************************************************************************************************************
 router.post('/edit', function (req, res) {
         service_sub_adminMdodel.findByIdAndUpdate(req.body._id, req.body, {new: true}, function (err, UpdatedDetails) {
             if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
              res.json({Status:"Success",Message:"Functiondetails Updated", Data : UpdatedDetails ,Code:200});
         });
 });
+
+
+
 // // DELETES A USER FROM THE DATABASE
 router.post('/delete', function (req, res) {
       service_sub_adminMdodel.findByIdAndRemove(req.body._id, function (err, user) {

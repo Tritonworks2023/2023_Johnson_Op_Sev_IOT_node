@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
+
 var user_managementSchema = new mongoose.Schema({  
   user_id:  String,
   user_email_id : String,
@@ -21,5 +23,5 @@ var user_managementSchema = new mongoose.Schema({
 
 });
 mongoose.model('user_management', user_managementSchema);
-
+user_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('user_management');

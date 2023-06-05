@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var audit_service_managementSchema = new mongoose.Schema({  
   
 
@@ -29,6 +30,10 @@ LAST_UPDATED_TIME : String,
 JOB_START_TIME :  String,
 JOB_END_TIME :  String,
 
+JOB_LOCATION : String,
+JOB_START_LAT : String,
+JOB_START_LONG : String,
+current_and_last_update_time : Date,
 
 
 
@@ -37,4 +42,5 @@ JOB_END_TIME :  String,
 
 });
 mongoose.model('audit_service_management', audit_service_managementSchema);
+audit_service_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('audit_service_management');

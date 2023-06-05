@@ -33,37 +33,65 @@ router.get('/deletes', function (req, res) {
 
 
 router.post('/check_local_storage',async function (req, res) {
-    console.log(req.body);
+  console.log("Operation Comple",req.body);
+  if(req.body.group_id == ""){
+    res.json({Status:"Success",Message:"Not Stored Data", Data : {} ,Code:200});
+  } else {
     temp_data_storedataModel.findOne({
        job_id: req.body.job_id,
        group_id : req.body.group_id,
        user_id :req.body.user_id
     }, function (err, Functiondetails) {
-        console.log(Functiondetails);
        if(Functiondetails ==  null){
             res.json({Status:"Success",Message:"Not Stored Data", Data : {} ,Code:200});
        }else{
-        res.json({Status:"Success",Message:"Stored Data", Data : {} ,Code:200});
+         if(req.body.group_id == "629ede01886f5404a75d4a84" || req.body.group_id == "629ede01886f5404a75d4a86"){
+            res.json({Status:"Success",Message:"Not Stored Data", Data : {} ,Code:200});
+        }else {
+            res.json({Status:"Success",Message:"Stored Data", Data : {} ,Code:200});
+        }
        }     
+    });
+  }
+});
+
+
+
+router.post('/joint/check_local_storage',async function (req, res) {
+    temp_data_storedataModel.findOne({
+       job_id: req.body.job_id,
+       group_id : req.body.group_id,
+    },async function (err, Functiondetails) {
+     temp_data_storedataModel.findByIdAndRemove(Functiondetails._id, function (err, user) {
+          if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
+            res.json({Status:"Success",Message:"joint/check_local_storage", Data : {} ,Code:200});
+      });
     });
 });
 
 
 
-router.get('/getlist', function (req, res) {
-        temp_data_storedataModel.find({}, function (err, Functiondetails) {
+
+
+
+
+
+router.post('/find_job', function (req, res) {
+        temp_data_storedataModel.find({job_id: req.body.job_id}, function (err, Functiondetails) {
           res.json({Status:"Success",Message:"activedetail_management", Data : Functiondetails ,Code:200});
         });
 });
 
-
 router.post('/delete_storage',async function (req, res) {
    var datas = await temp_data_storedataModel.findOne({job_id: req.body.job_id,group_id:req.body.group_id,user_id :req.body.user_id});
-   console.log(req.body);
-   temp_data_storedataModel.findByIdAndRemove(datas._id, function (err, user) {
+   if(datas == null){
+      res.json({Status:"Success",Message:"Deleted", Data : {} ,Code:200});
+   }else {
+       temp_data_storedataModel.findByIdAndRemove(datas._id, function (err, user) {
           if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
             res.json({Status:"Success",Message:"Deleted", Data : {} ,Code:200});
       });
+   }
 });
 
 router.post('/edit', function (req, res) {
@@ -93,7 +121,6 @@ attendance_end_time: req.body.attendance_end_time,
 // // DELETES A USER FROM THE DATABASE
 router.post('/admin_delete', function (req, res) {
       temp_data_storedataModel.findByIdAndRemove(req.body._id, function (err, user) {
-        console.log(err);
           if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
 
           res.json({Status:"Success",Message:"activedetail_management Deleted successfully", Data : {} ,Code:200});
@@ -109,4 +136,47 @@ router.post('/delete', function (req, res) {
           res.json({Status:"Success",Message:"activedetail_management Deleted successfully", Data : {} ,Code:200});
       });
 });
+
+
+
+
+
+
+
+
+
+
+
+// ******************************************************************************************************************************************************************************
+// OPERATION TEMP DATA DELETE PROCESS QUERY
+// ******************************************************************************************************************************************************************************
+
+router.post('/delete_old_record',async function (req, res) {
+        temp_data_storedataModel.find({},async function (err, Functiondetails) {
+         for(let a = 0 ; a < Functiondetails.length; a++){
+          temp_data_storedataModel.findByIdAndRemove(Functiondetails[a]._id, function (err, user) {
+          if (err) return res.json({Status:"Failed",Message:"Internal Server Error", Data : {},Code:500});
+          });
+           if(a == Functiondetails.length - 1){
+            res.json({Status:"Success",Message:"Deleted", Data : {} ,Code:200});
+           }
+         }
+        }).sort({_id:1}).limit(req.body.limit);
+});
+
+
+router.get('/getlist_count',async function (req, res) {
+        temp_data_storedataModel.find({},async function (err, Functiondetails) {
+         res.json({Status:"Success",Message:"Deleted", Data : Functiondetails ,Code:200});
+        }).count();
+});
+
+// ******************************************************************************************************************************************************************************
+
+
+
+
+
+
+
 module.exports = router;

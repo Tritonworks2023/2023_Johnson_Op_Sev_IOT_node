@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var part_reply_service_managementSchema = new mongoose.Schema({  
   
   SMU_ACK_BRID:  String,
@@ -26,12 +27,20 @@ var part_reply_service_managementSchema = new mongoose.Schema({
   SMU_ACK_VANID :  String,
   SMU_ACK_ISSQTY :  String,
   SMU_ACK_ERRDESC :  String,
+  SMU_ACK_BRCODE :  String,
+
   JOB_STATUS : String,
   JOB_VIEW_STATUS : String,
   LAST_UPDATED_TIME : String,
   JOB_START_TIME :  String,
   JOB_END_TIME :  String,
+  
+JOB_LOCATION : String,
+JOB_START_LAT : String,
+JOB_START_LONG : String,
+current_and_last_update_time : Date,
 
 });
 mongoose.model('part_reply_service_management', part_reply_service_managementSchema);
+part_reply_service_managementSchema.plugin(timestamps);
 module.exports = mongoose.model('part_reply_service_management');

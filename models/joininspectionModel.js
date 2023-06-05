@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
+var timestamps = require('mongoose-timestamp');
 var joininspectionSchema = new mongoose.Schema({  
 user_id :  {  
        type: Schema.Types.ObjectId,
@@ -28,4 +29,5 @@ data_store : Array,
 
 });
 mongoose.model('joininspection', joininspectionSchema);
+joininspectionSchema.plugin(timestamps);
 module.exports = mongoose.model('joininspection');
